@@ -24,21 +24,21 @@ public class ProductProducer {
 
     public void sendProduct(ProductDto date, String topic) {
 
-        LOGGER.info(String.format("New product sent -> %s", date.toString()));
+        LOGGER.info("New product sent -> {}", date.toString());
 
         Message<ProductDto> message = MessageBuilder
                 .withPayload(date)
-                .setHeader(KafkaHeaders.TOPIC, "product-save-DB-topic")
+                .setHeader(KafkaHeaders.TOPIC, topic)
                 .build();
 
         kafkaTemplate.send(message);
     }
 
-    public void requestProduct(Long id){
-        LOGGER.info(String.format("Request product by ID sent -> %s", id.toString()));
-        // Создаем объект ProductDto для запроса
-        ProductDto productDto = new ProductDto(id);
+    public void requestProduct(ProductDto productDto){
+        LOGGER.info("Request product by ID sent -> {}", productDto.toString());
+
         // Отправка запроса на получение продукта. Не ждём ответа, продолжаем работу
         kafkaTemplate.send("request-product-by-ID-topic", productDto);
     }
 }
+
